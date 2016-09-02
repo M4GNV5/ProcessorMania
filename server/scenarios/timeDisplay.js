@@ -9,7 +9,7 @@ var cpu = {
 
 	tickRate: 10,
 	memorySize: 256,
-	modules: ["base", "conditional", "bit", "bcdreg", "alu"],
+	modules: ["base", "conditional", "bit", "bcdreg", "alu", "stack"],
 	mainReg: "al",
 	out: function(port, val)
 	{
@@ -23,9 +23,9 @@ var pit = {
 	portToCpu: randomPort(),
 	timePort: randomPort(),
 
-	tickRate: 200,
+	tickRate: 50,
 	memorySize: 0,
-	modules: ["base", "conditional", "alu"],
+	modules: ["base", "conditional", "bcdreg", "alu"],
 	mainReg: "al",
 	setup: function()
 	{
@@ -48,9 +48,9 @@ var display = {
 	lowerValPort: randomPort(),
 	text: "00:00",
 
-	tickRate: 100,
+	tickRate: 50,
 	memorySize: 16,
-	modules: ["base", "conditional", "alu"],
+	modules: ["base", "conditional", "bcdreg", "alu"],
 	mainReg: "al",
 	out: function(port, val)
 	{
