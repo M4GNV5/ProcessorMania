@@ -14,7 +14,7 @@ var missionDisplay = document.getElementById("mission");
 var interruptDisplay = document.getElementById("interrupt");
 
 var device;
-var ws = new WebSocket("ws://127.0.0.1:8200");
+var ws = new WebSocket("ws://" + document.location.hostname + ":8200");
 ws.onmessage = function(ev)
 {
 	var data = JSON.parse(ev.data);
