@@ -71,7 +71,7 @@ function BaseModule(device)
 		device.ip = addr();
 	}
 
-	this.out = function(val, port)
+	this.out = function(port, val)
 	{
 		ws.send(JSON.stringify({
 			cmd: "out",
