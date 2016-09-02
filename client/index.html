@@ -12,16 +12,25 @@ intHandler:
 
 		<div id="out">
 			<div id="displayContainer">
-				<div class="display" id="regDisplay">AL: 0000</div>
-				<div class="display" id="interrupt">Interrupt: - Return-IP: -</div>
+				<div class="display" id="regDisplay">AX: 0000</div>
+				<div class="display" id="interrupt">Interrupt: int.id: ?? int.ip: ??</div>
 				<br />
 				<br />
 				<div class="display" id="ipDisplay">IP: 0000</div>
 				<div class="display" id="mission">Output: ?????</div>
 				<button onclick="device.parse(editor.getValue())">Reset device</button>
 			</div>
-			<div id="notes"><textarea id="notesText">Notes:</textarea></div>
+			<div id="notes"><textarea id="notesText">Personal Notes
+
+CPU generated interrupts:
+  0x00: Invalid instruction
+  0x01: Out of code
+  0x02: Unknown register
+  0x03: Invalid memory
+        access</textarea></div>
 		</div>
+
+<a href="https://github.com/M4GNV5/ProcessorMania/blob/master/Manual.md">Manual</a>
 
 		<script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.2.2/ace.js" type="text/javascript"></script>
 		<script src="device.js"></script>

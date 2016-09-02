@@ -1,6 +1,6 @@
 String.prototype.pad = function(len, c)
 {
-	return new Array(len - this.length + 1).join(c) + this;
+	return new Array(len - this.length + 1).join(c || "0") + this;
 };
 
 var editor = ace.edit("editor");

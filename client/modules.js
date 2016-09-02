@@ -37,7 +37,7 @@ function BaseModule(device)
 
 	this.lidt = function(handler)
 	{
-		device.interruptHandler = handler();
+		device.interrupt.handler = handler();
 	}
 
 	this.int = function(id)
@@ -48,9 +48,11 @@ function BaseModule(device)
 
 	this.iret = function()
 	{
-		device.ip = device.interruptReturn;
-		device.interruptReturn = 0;
-		interruptDisplay.innerHTML = "Interrupt: - Return-IP: -";
+		if(!device.interrupt.active)
+			device.raise(0, "Using iret while not in an interrupt");
+		device.ip = device.interrupt.return;
+		device.interrupt.active = false;
+		interruptDisplay.innerHTML = "Interrupt: int.id: ?? int.ip: ??";
 	}
 
 	this.hlt = function()

@@ -1,18 +1,37 @@
 function Device(tickRate, memorySize, modules, mainReg)
 {
-	this.modules = [];
-	this.register = {};
+	var self = this;
+
 	this.IOBuff = new Uint16Array(256);
 	this.isHalting = true;
-	this.interruptReturn = -1;
-	this.interruptHandler = 0;
 	this.mainReg = mainReg;
+	this.interrupt = {
+		id: 0,
+		return: 0,
+		handler: 0,
+		active: false
+	};
+	this.register = {
+		"int.id": function(val)
+		{
+			if(typeof val != "undefined")
+				self.raise(0, "Cannot set int.id");
+			else
+				return self.interrupt.id;
+		},
+		"int.ip": function(val)
+		{
+			if(typeof val != "undefined")
+				self.raise(0, "Cannot set int.ip");
+			else
+				return self.interrupt.return;
+		}
+	};
 
 	if(memorySize > 0)
 		this.memory = new Uint16Array(memorySize);
 
-	var self = this;
-
+	this.modules = [];
 	modules.forEach(function(name)
 	{
 		var ctor = availableModules[name];
@@ -30,10 +49,14 @@ function Device(tickRate, memorySize, modules, mainReg)
 
 Device.prototype.raise = function(id, msg)
 {
-	this.interruptReturn = this.ip;
-	this.ip = this.interruptHandler;
+	this.interrupt.id = id & 0xFF;
+	this.interrupt.return = this.ip;
+	this.interrupt.active = true;
+
+	this.ip = this.interrupt.handler;
 	this.isHalting = false;
-	interruptDisplay.innerHTML = "Interrupt: " + id + " Return-IP: " + this.interruptReturn;
+
+	interruptDisplay.innerHTML = "Interrupt: int.id: " + this.interrupt.id.toString(16).pad(2) + " int.ip: " + this.interrupt.return;
 	throw new Error("Interrupt " + id + " - " + msg);
 };
 
@@ -138,7 +161,6 @@ Device.prototype.tick = function()
 
 			var inner = arg.substring(arg.indexOf("(") + 1, arg.indexOf(")"));
 			var addr = arg[0] == "(" ? 0 : parseInt(arg);
-			console.log(addr);
 
 			if(inner[0] == "%")
 				addr += this.getRegister(inner.substr(1))();
