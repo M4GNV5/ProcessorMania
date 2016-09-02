@@ -65,6 +65,9 @@ Device.prototype.parse = function(src)
 	this.symbols = {};
 	this.lines = src.split("\n");
 
+	interruptDisplay.innerHTML = "Interrupt: int.id: ?? int.ip: ??";
+	this.interrupt.active = false;
+
 	var self = this;
 	this.lines.forEach(function(line, i)
 	{

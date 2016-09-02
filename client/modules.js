@@ -84,7 +84,7 @@ function BaseModule(device)
 	{
 		port = port();
 		var val = device.IOBuff[port] || 0;
-		al(val);
+		ax(val);
 
 		device.IOBuff[port] = 0;
 		ws.send(JSON.stringify({
@@ -205,24 +205,24 @@ function AluModule(device)
 		var ax= device.getRegister("ax");
 		var dx = device.getRegister("dx");
 
-		var result = (dl() << 16) + al();
+		var result = (dx() << 16) + ax();
 		result = result * val();
 
-		al(result & 0xFFFF);
-		dl(result >> 16);
+		ax(result & 0xFFFF);
+		dx(result >> 16);
 	}
 	this.div = function(src, dst)
 	{
-		var al = device.getRegister("ax");
-		var dl = device.getRegister("dx");
+		var ax = device.getRegister("ax");
+		var dx = device.getRegister("dx");
 		val = val();
 
-		var result = (dl() << 16) + al();
+		var result = (dx() << 16) + ax();
 		var mod = result % val();
 		result = result / val();
 
-		al(result & 0xFFFF);
-		dl(mod & 0xFFFF);
+		ax(result & 0xFFFF);
+		dx(mod & 0xFFFF);
 	}
 }
 
