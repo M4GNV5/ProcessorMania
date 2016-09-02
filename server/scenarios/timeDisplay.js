@@ -29,12 +29,12 @@ var pit = {
 	mainReg: "al",
 	setup: function()
 	{
-		this.socket.sendJson({cmd: "IO", port: this.timePort, value: Date.now() & 0xFF});
+		this.socket.sendJson({cmd: "IO", port: this.timePort, value: Date.now() & 0xFFFF});
 	},
 	in: function(port)
 	{
 		if(port == this.timePort)
-			this.socket.sendJson({cmd: "IO", port: this.timePort, value: Date.now() & 0xFF});
+			this.socket.sendJson({cmd: "IO", port: this.timePort, value: Date.now() & 0xFFFF});
 	},
 	out: function(port, val)
 	{

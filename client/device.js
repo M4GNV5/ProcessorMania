@@ -2,13 +2,14 @@ function Device(tickRate, memorySize, modules, mainReg)
 {
 	this.modules = [];
 	this.register = {};
-	this.IOBuff = new Uint8Array(256);
+	this.IOBuff = new Uint16Array(256);
 	this.isHalting = true;
+	this.interruptReturn = -1;
 	this.interruptHandler = 0;
 	this.mainReg = mainReg;
 
 	if(memorySize > 0)
-		this.memory = new Uint8Array(memorySize);
+		this.memory = new Uint16Array(memorySize);
 
 	var self = this;
 
@@ -29,11 +30,11 @@ function Device(tickRate, memorySize, modules, mainReg)
 
 Device.prototype.raise = function(id, msg)
 {
-	this.getRegister(this.mainReg)(id);
+	this.interruptReturn = this.ip;
 	this.ip = this.interruptHandler;
 	this.isHalting = false;
-	interruptDisplay.innerHTML = "Interrupt: " + msg;
-	throw new Error("Interrupt " + id + " : " + msg);
+	interruptDisplay.innerHTML = "Interrupt: " + id + " Return-IP: " + this.interruptReturn;
+	throw new Error("Interrupt " + id + " - " + msg);
 };
 
 Device.prototype.parse = function(src)
@@ -71,17 +72,9 @@ Device.prototype.tick = function()
 	} while(line == "")
 	var i = 0;
 
-	function display(el, name, val)
-	{
-		if(val < 10)
-			val = "0" + val.toString(16);
-		else
-			val = val.toString(16);
-
-		el.innerHTML = name.toUpperCase() + ": " + val;
-	}
-	display(ipDisplay, "ip", this.ip);
-	display(regDisplay, this.mainReg, this.getRegister(this.mainReg)());
+	ipDisplay.innerHTML = "IP: " + this.ip.toString(16).pad(4, "0");
+	var mainRegVal = this.getRegister(this.mainReg)();
+	regDisplay.innerHTML = this.mainReg.toUpperCase() + ": " + mainRegVal.toString(16).pad(4, "0");
 
 	function getArg(split)
 	{

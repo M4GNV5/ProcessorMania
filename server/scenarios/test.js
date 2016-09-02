@@ -2,7 +2,7 @@ module.exports = [
 	{
 		tickRate: 1000,
 		memorySize: 256,
-		modules: ["base"],
+		modules: ["base", "conditional", "bit", "bcdreg", "alu", "stack"],
 		mainReg: "al",
 		in: function(port)
 		{

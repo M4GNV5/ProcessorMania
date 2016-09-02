@@ -21,16 +21,18 @@ function createRegister(size, start)
 
 function BaseModule(device)
 {
-	device.register.al = createRegister(0xFF);
+	var ax = createRegister(0xFFFF);
+	device.register.ax = ax;
 
 	this.argc = {
 		"lidt": 1,
 		"int": 1,
+		"iret": 0,
 		"hlt": 0,
 		"mov": 2,
 		"jmp": 1,
 		"out": 2,
-		"in": 2
+		"in": 1
 	};
 
 	this.lidt = function(handler)
@@ -40,11 +42,20 @@ function BaseModule(device)
 
 	this.int = function(id)
 	{
+		device.ip++;
 		device.raise(id(), "User interrupt");
+	}
+
+	this.iret = function()
+	{
+		device.ip = device.interruptReturn;
+		device.interruptReturn = 0;
+		interruptDisplay.innerHTML = "Interrupt: - Return-IP: -";
 	}
 
 	this.hlt = function()
 	{
+		device.ip++;
 		device.isHalting = true;
 	}
 
@@ -67,12 +78,11 @@ function BaseModule(device)
 		}));
 	}
 
-	this.in = function(val, port)
+	this.in = function(port)
 	{
 		port = port();
-		var ret = device.IOBuff[port] || 0;
-		console.dir(ret);
-		val(ret);
+		var val = device.IOBuff[port] || 0;
+		al(val);
 
 		device.IOBuff[port] = 0;
 		ws.send(JSON.stringify({
@@ -164,9 +174,9 @@ function BitModule(device)
 
 function BCDRegisterModule(device)
 {
-	device.register.bl = createRegister(0xFF);
-	device.register.cl = createRegister(0xFF);
-	device.register.dl = createRegister(0xFF);
+	device.register.bx = createRegister(0xFFFF);
+	device.register.cx = createRegister(0xFFFF);
+	device.register.dx = createRegister(0xFFFF);
 }
 
 function AluModule(device)
@@ -181,7 +191,7 @@ function AluModule(device)
 	this.add = function(src, dst)
 	{
 		var val = dst() + src();
-		dst(val & 0xFF);
+		dst(val & 0xFFFF);
 	};
 	this.sub = function(src, dst)
 	{
@@ -190,35 +200,35 @@ function AluModule(device)
 	};
 	this.mul = function(val)
 	{
-		var al = device.getRegister("al");
-		var dl = device.getRegister("dl");
+		var ax= device.getRegister("ax");
+		var dx = device.getRegister("dx");
 
-		var result = (dl() << 8) + al();
+		var result = (dl() << 16) + al();
 		result = result * val();
 
-		al(result & 0xFF);
-		dl(result >> 8);
+		al(result & 0xFFFF);
+		dl(result >> 16);
 	}
 	this.div = function(src, dst)
 	{
-		var al = device.getRegister("al");
-		var dl = device.getRegister("dl");
+		var al = device.getRegister("ax");
+		var dl = device.getRegister("dx");
 		val = val();
 
-		var result = (dl() << 8) + al();
-		var mod = result & val();
+		var result = (dl() << 16) + al();
+		var mod = result % val();
 		result = result / val();
 
-		al(result & 0xFF);
-		dl(mod & 0xFF);
+		al(result & 0xFFFF);
+		dl(mod & 0xFFFF);
 	}
 }
 
 function StackModule(device)
 {
-	var sp = createRegister(0xFF, 255);
+	var sp = createRegister(0xFFFF, device.memory.length);
 	device.register.sp = sp;
-	device.register.bp = createRegister(0xFF);
+	device.register.bp = createRegister(0xFFFF);
 
 	this.argc = {
 		"push": 1,

@@ -1,3 +1,8 @@
+String.prototype.pad = function(len, c)
+{
+	return new Array(len - this.length + 1).join(c) + this;
+};
+
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
 editor.getSession().setMode("ace/mode/assembly_x86");
