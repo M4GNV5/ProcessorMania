@@ -56,7 +56,7 @@ the add instruction will cause an invalid instruction interrupt and your program
 ###Register
 - `AX`: General purpose register
 - `int.id`: read-only register containing the interrupt id
-- `int.ip`: read-only register containing the interrupt return pointer
+- `int.ip`: read/write register containing the interrupt return pointer
 
 ###Instructions
 - `nop` Do nothing

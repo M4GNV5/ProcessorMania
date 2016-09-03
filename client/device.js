@@ -23,7 +23,7 @@ function Device(tickRate, memorySize, modules, displayRegs)
 		"int.ip": function(val)
 		{
 			if(typeof val != "undefined")
-				self.raise(0, "Cannot set int.ip");
+				self.interrupt.return = val;
 			else
 				return self.interrupt.return;
 		},
@@ -59,13 +59,29 @@ Device.prototype.raise = function(id, msg)
 {
 	this.interrupt.id = id & 0xFF;
 	this.interrupt.return = this.ip;
-	this.interrupt.active = true;
 
-	this.ip = this.interrupt.handler;
-	if(this.lines)
+	var idString = this.interrupt.id.toString(16).pad(2);
+	var returnString = this.interrupt.return.toString(16).pad(2);
+	var labelString = "Interrupt: int.id: " + idString + " int.ip: " + returnString;
+
+	if(!this.lines || this.interrupt.active)
+	{
+		interruptDisplay.innerHTML = "/!\\ " + labelString;
+		this.isHalting = true;
+	}
+	else if(this.interrupt.handler < 0 || this.interrupt.handler >= this.lines.length)
+	{
+		interruptDisplay.innerHTML = "/?\\ " + labelString;
+	}
+	else
+	{
+		interruptDisplay.innerHTML = labelString;
+		this.interrupt.active = true;
+
+		this.ip = this.interrupt.handler;
 		this.isHalting = false;
+	}
 
-	interruptDisplay.innerHTML = "Interrupt: int.id: " + this.interrupt.id.toString(16).pad(2) + " int.ip: " + this.interrupt.return;
 	throw new Error("Interrupt " + id + " - " + msg);
 };
 
@@ -86,7 +102,7 @@ Device.prototype.parse = function(src)
 	}
 	this.raise = raise;
 
-	interruptDisplay.innerHTML = "Interrupt: int.id: ?? int.ip: ??";
+	interruptDisplay.innerHTML = "/?\\ Interrupt: int.id: ?? int.ip: ??";
 	this.interrupt.active = false;
 
 	var self = this;
