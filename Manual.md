@@ -27,6 +27,7 @@ the add instruction will cause an invalid instruction interrupt and your program
 
 ##Modules
 - [Base](#base)
+- [Loop](#loop)
 - [Conditional](#conditional)
 - [BitOperatorions](#bitoperations)
 - [BCDRegister](#bcdregister)
@@ -51,6 +52,13 @@ the add instruction will cause an invalid instruction interrupt and your program
 - `jmp dst` Unconditional jump to `dst`
 - `out port val` Output `val` to `port` (used for communicating with other CPUs)
 - `in port` Input value from `port` into `AX`
+
+##Loop
+###Register
+- `CX` General purpose register
+
+###Instruction
+- `loop dst` cx--; if(cx != 0) jmp dst;
 
 ##Conditional
 - `cmp a b` Compare `a` and `b` settings flags used with conditional jumps

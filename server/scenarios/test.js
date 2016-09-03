@@ -1,9 +1,9 @@
 module.exports = [
 	{
-		tickRate: 1000,
+		tickRate: 100,
 		memorySize: 256,
-		modules: ["base", "conditional", "bit", "bcdreg", "alu", "stack"],
-		displayRegs: ["ax", "bx", "ip"],
+		modules: ["base", "loop", "conditional", "bit", "bcdreg", "alu", "stack"],
+		displayRegs: ["ax", "cx", "ip"],
 		in: function(port)
 		{
 			this.socket.sendJson({

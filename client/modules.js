@@ -1,5 +1,6 @@
 var availableModules = {
 	"base": BaseModule,
+	"loop": LoopModule,
 	"conditional": ConditionalModule,
 	"bit": BitModule,
 	"bcdreg": BCDRegisterModule,
@@ -109,6 +110,26 @@ function BaseModule(device)
 			cmd: "in",
 			port: port
 		}));
+	}
+}
+
+function LoopModule(device)
+{
+	device.register.cx = createRegister(0xFFFF);
+
+	this.argc = {
+		"loop": 1
+	}
+
+	this.loop = function(dst)
+	{
+		var cx = device.register.cx;
+
+		var val = cx() - 1;
+		cx(val);
+
+		if(val != 0)
+			device.ip = dst();
 	}
 }
 
