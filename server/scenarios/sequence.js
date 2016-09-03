@@ -130,7 +130,7 @@ var mem = {
 	in: function(port)
 	{
 		if(port == this.inPort && sequence.length > 0)
-			this.socket.sendJson({cmd: "IO", port: this.secPort, value: sequence.pop()});
+			this.socket.sendJson({cmd: "IO", port: this.secPort, value: sequence.shift()});
 	},
 	out: function(port, val)
 	{

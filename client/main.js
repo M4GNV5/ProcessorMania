@@ -18,17 +18,36 @@ if(localStorage.notes)
 if(localStorage.code)
 	editor.setValue(localStorage.code);
 
+function setNotesText(text)
+{
+	if(text)
+	{
+		if(!notesText.disabled)
+			localStorage.notes = notesText.value;
+		notesText.value = text;
+		notesText.disabled = true;
+	}
+	else
+	{
+		notesText.value = localStorage.notes;
+		notesText.disabled = false;
+	}
+}
+
 var device;
 var ws = new WebSocket("ws://" + document.location.hostname + ":8200");
+ws.onclose = function(ev)
+{
+	setNotesText("Websocket closed with code " + ev.code);
+}
 ws.onmessage = function(ev)
 {
 	var data = JSON.parse(ev.data);
 	switch(data.cmd)
 	{
 		case "full":
-		localStorage.notes = notesText.value;
-			notesText.value = "Server full :(";
-			return;
+			setNotesText("Server full :(");
+			break;
 		case "start":
 			device = new Device(data.tickRate, data.memorySize, data.modules, data.displayRegs);
 			document.getElementById("resetButton").disabled = false;
@@ -36,6 +55,10 @@ ws.onmessage = function(ev)
 			break;
 		case "display":
 			missionDisplay.innerHTML = "Output: " + data.text;
+			break;
+		case "info":
+			setNotesText(data.text);
+			break;
 		case "IO":
 			device.IOBuff[data.port] = data.value;
 			break;

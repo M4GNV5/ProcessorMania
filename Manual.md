@@ -63,12 +63,12 @@ the add instruction will cause an invalid instruction interrupt and your program
 - `lidt dst` Load label as the instruction handler
 - `int id` Cause interrupt
 - `iret` Return from interrupt
-- `hlt` Halt CPU (do nothing until an interrupt is received)
+- `hlt` Halt processor (do nothing until an interrupt is received)
 - `mov src, dst` dst = src
 - `inc val` val++
 - `dec val` val--
 - `jmp dst` Unconditional jump to `dst`
-- `out port val` Output `val` to `port` (used for communicating with other CPUs)
+- `out port val` Output `val` to `port` (used for communicating with other processor)
 - `in port` Input value from `port` into `AX`
 
 ##Loop
@@ -79,7 +79,7 @@ the add instruction will cause an invalid instruction interrupt and your program
 - `loop dst` cx--; if(cx != 0) jmp dst;
 
 ##Conditional
-- `cmp a b` Compare `a` and `b` settings flags used with conditional jumps
+- `cmp a b` Compare `a` and `b` sets flags used with conditional jumps
 - `je dst` Jump to `dst` if `a == b`
 - `jne dst` Jump to `dst` if `a != b`
 - `jl dst` Jump to `dst` if `a < b`

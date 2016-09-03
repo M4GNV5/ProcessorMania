@@ -41,7 +41,12 @@ var pit = {
 	in: function(port)
 	{
 		if(port == this.secPort)
-			this.socket.sendJson({cmd: "IO", port: this.secPort, value: (Date.now() / 1000) & 0xFFFF});
+		{
+			var now = new Date();
+			var val = ((now.getHours() % 12) * 60 + now.getMinutes()) * 60 + now.getSeconds();
+			this.socket.sendJson({cmd: "IO", port: this.secPort, value: val & 0xFFFF});
+		}
+
 		if(port == this.milliPort)
 			this.socket.sendJson({cmd: "IO", port: this.milliPort, value: Date.now() % 1000});
 	},
