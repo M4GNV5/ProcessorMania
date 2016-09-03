@@ -73,8 +73,8 @@ the add instruction will cause an invalid instruction interrupt and your program
 ##ArithmeticOperations
 - `add src, dst` dst += src
 - `sub src, dst` dst -= src
-- `mul src` AX:DX *= src (higher values in DX)
-- `div src` AX:DX /= src (modulo in DX)
+- `mul src` DX:AX *= src (higher values in DX)
+- `div src` DX:AX /= src (modulo in DX)
 
 ##Stack
 ###Register
