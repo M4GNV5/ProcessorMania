@@ -62,6 +62,7 @@ Device.prototype.raise = function(id, msg)
 
 Device.prototype.parse = function(src)
 {
+	localStorage.code = src;
 	this.symbols = {};
 	this.lines = src.split("\n");
 

@@ -12,6 +12,12 @@ var regDisplay = document.getElementById("regDisplay");
 var ipDisplay = document.getElementById("ipDisplay");
 var missionDisplay = document.getElementById("mission");
 var interruptDisplay = document.getElementById("interrupt");
+var notesText = document.getElementById("notesText");
+
+if(localStorage.notes)
+	notesText.value = localStorage.notes;
+if(localStorage.code)
+	editor.setValue(localStorage.code);
 
 var device;
 var ws = new WebSocket("ws://" + document.location.hostname + ":8200");
@@ -21,10 +27,12 @@ ws.onmessage = function(ev)
 	switch(data.cmd)
 	{
 		case "full":
-			alert("Server full. :(");
+		localStorage.notes = notesText.value;
+			notesText.value = "Server full :(";
 			return;
 		case "start":
 			device = new Device(data.tickRate, data.memorySize, data.modules, data.mainReg);
+			document.getElementById("resetButton").disabled = false;
 			break;
 		case "display":
 			missionDisplay.innerHTML = "Output: " + data.text;
@@ -33,5 +41,6 @@ ws.onmessage = function(ev)
 			break;
 		case "raise":
 			device.raise(data.id, data.text);
+			break;
 	}
 }

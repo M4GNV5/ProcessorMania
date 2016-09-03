@@ -18,9 +18,9 @@ intHandler:
 				<br />
 				<div class="display" id="ipDisplay">IP: 0000</div>
 				<div class="display" id="mission">Output: ?????</div>
-				<button onclick="device.parse(editor.getValue())">Reset device</button>
+				<button id="resetButton" onclick="device.parse(editor.getValue())" disabled>Reset device</button>
 			</div>
-			<div id="notes"><textarea id="notesText">Personal Notes
+			<div id="notes"><textarea id="notesText" onchange="localStorage.notes = this.value">Personal Notes
 
 CPU generated interrupts:
   0x00: Invalid instruction
