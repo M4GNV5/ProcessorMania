@@ -12,14 +12,14 @@ intHandler:
 
 		<div id="out">
 			<div id="displayContainer">
-				<div id="regDisplay"></div>
+				<div id="regDisplay"><div class="display">AX: 0000</div> <div class="display">IP: 0000</div></div>
 				<br />
 				<br />
 				<div class="display" id="interrupt">Interrupt: int.id: ?? int.ip: ??</div>
+				<button id="resetButton" onclick="device.parse(editor.getValue())" disabled>Reset device</button>
 				<br />
 				<br />
 				<div class="display" id="mission">Output: ?????</div>
-				<button id="resetButton" onclick="device.parse(editor.getValue())" disabled>Reset device</button>
 			</div>
 			<div id="notes"><textarea id="notesText" onchange="localStorage.notes = this.value">Personal Notes
 

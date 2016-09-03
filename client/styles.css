@@ -15,8 +15,8 @@ body
 	padding-top: 5px;
 	padding-left: 2%;
 	font-family: monospace;
-	font-size: 16px;
-	max-width: 500px;
+	font-size: 14px;
+	max-width: 49%;
 }
 #editor, #out
 {
@@ -32,7 +32,7 @@ body
 }
 #displayContainer
 {
-	width: 450px;
+	width: 550px;
 	height: 110px;
 }
 #regDisplay
@@ -45,7 +45,7 @@ body
 	background-position: left;
 	background-repeat: no-repeat;
 	width: 550px;
-	height: 575px;
+	height: 590px;
 }
 #notesText
 {
@@ -53,8 +53,7 @@ body
 	background: transparent;
 	font-size: 21px;
 	position: relative;
-	top: 15px;
 	left: 90px;
 	width: 460px;
-	height: 575px;
+	height: 585px;
 }
