@@ -32,6 +32,7 @@ ws.onmessage = function(ev)
 		case "start":
 			device = new Device(data.tickRate, data.memorySize, data.modules, data.displayRegs);
 			document.getElementById("resetButton").disabled = false;
+			document.getElementById("interruptButton").disabled = false;
 			break;
 		case "display":
 			missionDisplay.innerHTML = "Output: " + data.text;

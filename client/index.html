@@ -17,6 +17,7 @@ intHandler:
 				<br />
 				<div class="display" id="interrupt">Interrupt: int.id: ?? int.ip: ??</div>
 				<button id="resetButton" onclick="device.parse(editor.getValue())" disabled>Reset device</button>
+				<button id="interruptButton" onclick="device.raise(4, 'User interrupt')">Send interrupt</button>
 				<br />
 				<br />
 				<div class="display" id="mission">Output: ?????</div>
@@ -28,7 +29,8 @@ CPU generated interrupts:
   0x01: Out of code
   0x02: Unknown register
   0x03: Invalid memory
-        access</textarea></div>
+        access
+  0x04: User interrupt</textarea></div>
 		</div>
 
 		<a href="https://github.com/M4GNV5/ProcessorMania/blob/master/Manual.md">Manual</a>
