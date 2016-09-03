@@ -25,15 +25,23 @@ function BaseModule(device)
 	device.register.ax = ax;
 
 	this.argc = {
+		"nop": 0,
 		"lidt": 1,
 		"int": 1,
 		"iret": 0,
 		"hlt": 0,
 		"mov": 2,
+		"inc": 1,
+		"dec": 1,
 		"jmp": 1,
 		"out": 2,
 		"in": 1
 	};
+
+	this.nop = function()
+	{
+
+	}
 
 	this.lidt = function(handler)
 	{
@@ -64,6 +72,16 @@ function BaseModule(device)
 	this.mov = function(src, dst)
 	{
 		dst(src());
+	}
+
+	this.inc = function(val)
+	{
+		val(val() + 1);
+	}
+
+	this.dec = function(val)
+	{
+		val(val() - 1);
 	}
 
 	this.jmp = function(addr)
