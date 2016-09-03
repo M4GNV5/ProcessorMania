@@ -5,8 +5,26 @@ Instruction arguments can be one of the following:
 - Constants start with a `$` e.g. `$10`, `$0x17`, ...
 - Register start with a `%` e.g. `%ax`, `%sp`, ...
 - base+offset memory accesses have the form `constant(register)` e.g. `42(%ax)`, `0x2a(%bp)`, ...
-- direct memory accesses use just a constant e.g. `0xff`, `10`, ... (note no prefix)
-- symbols have no prefix either e.g. `main`, `intHandler`, ... (note you cannot write to symbols)
+- direct memory accesses use just a constant e.g. `0xff`, `10`, ... (note: no prefix)
+- symbols have no prefix either e.g. `main`, `intHandler`, ... (note: you cannot write to symbols)
+
+Instructions have the syntax `mnemonic source, destination` e.g.
+```S
+hlt
+inc %cx
+add $5, %ax
+```
+
+##CPU Generated Interrupts
+When an interrupt is received the current IP will be put into `int.ip` and the
+interrupt id into `int.id` and `ip` is set to the interrupt handler (loaded with `lidt`)
+You can return to `int.ip` using the `iret` instruction. (note: this differs from x86
+mainly because not all processors in this game have memory to put the return address)
+- `0x00`: Invalid instruction
+- `0x01`: Out of code
+- `0x02`: Unknown register
+- `0x03`: Invalid memory access
+- `0x04`: User interrupt
 
 ##Detecting Processor Features
 At the beginning of a game you will not know what features your CPU has or what your role is.
