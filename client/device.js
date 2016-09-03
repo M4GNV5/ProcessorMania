@@ -5,6 +5,7 @@ function Device(tickRate, memorySize, modules, displayRegs)
 	this.IOBuff = new Uint16Array(256);
 	this.isHalting = true;
 	this.displayRegs = displayRegs;
+	this.ip = 0;
 	this.interrupt = {
 		id: 0,
 		return: 0,
@@ -61,7 +62,8 @@ Device.prototype.raise = function(id, msg)
 	this.interrupt.active = true;
 
 	this.ip = this.interrupt.handler;
-	this.isHalting = false;
+	if(this.lines)
+		this.isHalting = false;
 
 	interruptDisplay.innerHTML = "Interrupt: int.id: " + this.interrupt.id.toString(16).pad(2) + " int.ip: " + this.interrupt.return;
 	throw new Error("Interrupt " + id + " - " + msg);
@@ -71,7 +73,7 @@ Device.prototype.parse = function(src)
 {
 	localStorage.code = src;
 	this.symbols = {};
-	this.lines = src.split("\n");
+	this.lines = src.replace(/;[^\n]*/g, "").split("\n");
 
 	if(this.memory)
 		this.memory = new Uint16Array(this.memory.length);
@@ -233,6 +235,7 @@ Device.prototype.getInstruction = function(ins)
 
 Device.prototype.getRegister = function(name)
 {
+	name = name.toLowerCase();
 	if(this.register.hasOwnProperty(name))
 		return this.register[name];
 
