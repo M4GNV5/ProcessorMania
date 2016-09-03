@@ -33,14 +33,19 @@ body
 #displayContainer
 {
 	width: 450px;
-	height: 100px;
+	height: 110px;
+}
+#regDisplay
+{
+	display: inline;
 }
 #notes
 {
 	background-image: url("notebook.jpg");
 	background-position: left;
+	background-repeat: no-repeat;
 	width: 550px;
-	height: 595px;
+	height: 575px;
 }
 #notesText
 {
@@ -48,7 +53,8 @@ body
 	background: transparent;
 	font-size: 21px;
 	position: relative;
+	top: 15px;
 	left: 90px;
 	width: 460px;
-	height: 595px;
+	height: 575px;
 }

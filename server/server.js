@@ -27,7 +27,7 @@ wss.on("connection", function(socket)
 				tickRate: player[i].tickRate,
 				memorySize: player[i].memorySize,
 				modules: player[i].modules,
-				mainReg: player[i].mainReg
+				displayRegs: player[i].displayRegs
 			});
 
 			if(player[i].setup)

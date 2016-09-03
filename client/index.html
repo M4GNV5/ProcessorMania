@@ -12,11 +12,12 @@ intHandler:
 
 		<div id="out">
 			<div id="displayContainer">
-				<div class="display" id="regDisplay">AX: 0000</div>
+				<div id="regDisplay"></div>
+				<br />
+				<br />
 				<div class="display" id="interrupt">Interrupt: int.id: ?? int.ip: ??</div>
 				<br />
 				<br />
-				<div class="display" id="ipDisplay">IP: 0000</div>
 				<div class="display" id="mission">Output: ?????</div>
 				<button id="resetButton" onclick="device.parse(editor.getValue())" disabled>Reset device</button>
 			</div>
@@ -30,7 +31,7 @@ CPU generated interrupts:
         access</textarea></div>
 		</div>
 
-<a href="https://github.com/M4GNV5/ProcessorMania/blob/master/Manual.md">Manual</a>
+		<a href="https://github.com/M4GNV5/ProcessorMania/blob/master/Manual.md">Manual</a>
 
 		<script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.2.2/ace.js" type="text/javascript"></script>
 		<script src="device.js"></script>

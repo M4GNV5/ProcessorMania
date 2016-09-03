@@ -1,10 +1,10 @@
-function Device(tickRate, memorySize, modules, mainReg)
+function Device(tickRate, memorySize, modules, displayRegs)
 {
 	var self = this;
 
 	this.IOBuff = new Uint16Array(256);
 	this.isHalting = true;
-	this.mainReg = mainReg;
+	this.displayRegs = displayRegs;
 	this.interrupt = {
 		id: 0,
 		return: 0,
@@ -25,6 +25,13 @@ function Device(tickRate, memorySize, modules, mainReg)
 				self.raise(0, "Cannot set int.ip");
 			else
 				return self.interrupt.return;
+		},
+		"ip": function(val)
+		{
+			if(typeof val != "undefined")
+				self.raise(0, "Cannot set ip");
+			else
+				return self.ip;
 		}
 	};
 
@@ -99,9 +106,14 @@ Device.prototype.tick = function()
 	} while(line == "")
 	var i = 0;
 
-	ipDisplay.innerHTML = "IP: " + this.ip.toString(16).pad(4, "0");
-	var mainRegVal = this.getRegister(this.mainReg)();
-	regDisplay.innerHTML = this.mainReg.toUpperCase() + ": " + mainRegVal.toString(16).pad(4, "0");
+	var self = this;
+	regDisplay.innerHTML = "";
+	this.displayRegs.forEach(function(reg)
+	{
+		var val = self.getRegister(reg)().toString(16).pad(4);
+		reg = reg.toUpperCase();
+		regDisplay.innerHTML += "<div class=\"display\">" + reg + ": " + val +"</div> ";
+	});
 
 	function getArg(split)
 	{
@@ -125,7 +137,6 @@ Device.prototype.tick = function()
 	if(!ins)
 		this.raise(0, "Unknown instruction " + JSON.stringify(insLabel));
 
-	var self = this;
 	var args = [];
 	var hasMemoryAcces = false;
 	for(; i < line.length; i++)

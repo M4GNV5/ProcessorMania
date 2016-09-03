@@ -9,7 +9,6 @@ editor.getSession().setMode("ace/mode/assembly_x86");
 editor.setOption("fontSize", 14);
 
 var regDisplay = document.getElementById("regDisplay");
-var ipDisplay = document.getElementById("ipDisplay");
 var missionDisplay = document.getElementById("mission");
 var interruptDisplay = document.getElementById("interrupt");
 var notesText = document.getElementById("notesText");
@@ -31,7 +30,7 @@ ws.onmessage = function(ev)
 			notesText.value = "Server full :(";
 			return;
 		case "start":
-			device = new Device(data.tickRate, data.memorySize, data.modules, data.mainReg);
+			device = new Device(data.tickRate, data.memorySize, data.modules, data.displayRegs);
 			document.getElementById("resetButton").disabled = false;
 			break;
 		case "display":

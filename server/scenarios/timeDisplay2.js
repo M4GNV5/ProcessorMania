@@ -10,7 +10,7 @@ var cpu = {
 	tickRate: 5,
 	memorySize: 256,
 	modules: ["base", "conditional", "bit", "bcdreg", "alu", "stack"],
-	mainReg: "ax",
+	mainReg: ["ax", "ip"],
 	out: function(port, val)
 	{
 		if(port == this.portToPit)
@@ -32,7 +32,7 @@ var pit = {
 	tickRate: 50,
 	memorySize: 0,
 	modules: ["base", "conditional", "bcdreg", "alu"],
-	mainReg: "ax",
+	mainReg: ["ax", "bx", "ip"],
 	setup: function()
 	{
 		this.in(this.secPort);
