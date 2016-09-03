@@ -40,11 +40,14 @@ the add instruction will cause an invalid instruction interrupt and your program
 - `int.ip`: read-only register containing the interrupt return pointer
 
 ###Instructions
+- `nop` Do nothing
 - `lidt dst` Load label as the instruction handler
 - `int id` Cause interrupt
 - `iret` Return from interrupt
 - `hlt` Halt CPU (do nothing until an interrupt is received)
 - `mov src, dst` dst = src
+- `inc val` val++
+- `dec val` val--
 - `jmp dst` Unconditional jump to `dst`
 - `out port val` Output `val` to `port` (used for communicating with other CPUs)
 - `in port` Input value from `port` into `AX`
