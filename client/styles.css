@@ -1,19 +1,19 @@
 body
 {
-	max-width: 1000px;
-	margin: 3px auto;
+	max-width: 1200px;
+	margin: 0px auto;
+	padding-top: 10px;
 }
 #editor
 {
 	width: 50%;
-	height: 500px;
+	height: 700px;
 	position: relative;
-	top: 5px;
 }
 #out
 {
-	padding-left: 2%;
 	padding-top: 5px;
+	padding-left: 2%;
 	font-family: monospace;
 	font-size: 16px;
 	max-width: 500px;
@@ -39,15 +39,16 @@ body
 {
 	background-image: url("notebook.jpg");
 	background-position: left;
-	width: 450px;
-	height: 400px;
+	width: 550px;
+	height: 595px;
 }
 #notesText
 {
+	border: none;
 	background: transparent;
 	font-size: 21px;
 	position: relative;
 	left: 90px;
-	width: 360px;
-	height: 400px;
+	width: 460px;
+	height: 595px;
 }
