@@ -73,6 +73,17 @@ Device.prototype.parse = function(src)
 	this.symbols = {};
 	this.lines = src.split("\n");
 
+	if(this.memory)
+		this.memory = new Uint16Array(this.memory.length);
+
+	var raise = this.raise;
+	this.raise = function() {};
+	for(var key in this.register)
+	{
+		this.register[key](0);
+	}
+	this.raise = raise;
+
 	interruptDisplay.innerHTML = "Interrupt: int.id: ?? int.ip: ??";
 	this.interrupt.active = false;
 
