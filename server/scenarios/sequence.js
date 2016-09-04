@@ -1,3 +1,5 @@
+var ComPort = require("../comPort.js");
+
 function rand(max, min)
 {
 	max = max || 256;
@@ -73,50 +75,58 @@ var memorySize = {
 }
 
 var outPort = rand();
-function output(isCpu, port, val)
+function output(sender, val)
 {
-	if(port == outPort)
+	var text;
+	if(val == expected[0])
 	{
-		if(isCpu && !cpuHasOut[mode] || !isCpu && cpuHasOut[mode])
-			return;
+		completed.push(expected.shift());
 
-		var text;
-		if(val == expected[0])
-		{
-			completed.push(expected.shift());
-
-			text = completed.join(", ");
-			if(expected.length == 0)
-				text += " YOU WIN!";
-		}
-		else
-		{
-			text = "Error: expected " + expected[0] + ", got " + val;
-			generateSequence();
-		}
-
-		cpu.socket.sendJson({cmd: "display", text: text});
-		mem.socket.sendJson({cmd: "display", text: text});
+		text = completed.join(", ");
+		if(expected.length == 0)
+			text += " YOU WIN!";
 	}
+	else
+	{
+		text = "Error: expected " + expected[0] + ", got " + val;
+		generateSequence();
+	}
+
+	cpu.socket.sendJson({cmd: "display", text: text});
+	mem.socket.sendJson({cmd: "display", text: text});
+	sender.socket.sendJson({cmd: "IOout", error: false});
 }
 
-var cpu = {
-	portToMem: rand(),
+var com = new ComPort(3000);
+console.dir(com);
 
+var cpu = {
 	tickRate: 5,
 	memorySize: memorySize[mode][0],
 	modules: ["base", "conditional", "bcdreg", "alu"],
 	displayRegs: ["ax", "dx", "ip"],
+	setup: function()
+	{
+		com.master = this.socket;
+	},
+	in: function(port, val)
+	{
+		if(port == com.masterPort)
+			com.masterListen();
+		else
+			this.socket.sendJson({cmd: "IOin", error: "Port not connected"});
+	},
 	out: function(port, val)
 	{
-		if(port == this.portToMem)
-			mem.socket.sendJson({cmd: "IO", port: mem.portToCpu, value: val});
-
-		output(true, port, val);
+		if(port == com.masterPort)
+			com.masterSend(val);
+		else if(port == outPort && cpuHasOut[mode])
+			output(this, val);
+		else
+			this.socket.sendJson({cmd: "IOout", error: "Port not connected"});
 	}
 };
 var mem = {
-	portToCpu: rand(),
 	inPort: rand(),
 
 	tickRate: 50,
@@ -125,19 +135,25 @@ var mem = {
 	displayRegs: ["ax", "cx", "ip"],
 	setup: function()
 	{
-		this.in(this.inPort);
+		com.slave = this.socket;
 	},
 	in: function(port)
 	{
-		if(port == this.inPort && sequence.length > 0)
-			this.socket.sendJson({cmd: "IO", port: this.inPort, value: sequence.shift()});
+		if(port == com.slavePort)
+			com.slaveListen();
+		else if(port == this.inPort)
+			this.socket.sendJson({cmd: "IOin", error: false, value: sequence.shift() || 0});
+		else
+			this.socket.sendJson({cmd: "IOin", error: "Port not connected"});
 	},
 	out: function(port, val)
 	{
-		if(port == this.portToCpu)
-			cpu.socket.sendJson({cmd: "IO", port: cpu.portToMem, value: val});
-
-		output(false, port, val);
+		if(port == com.slavePort)
+			com.slaveSend(val);
+		else if(port == outPort && !cpuHasOut[mode])
+			output(this, val);
+		else
+			this.socket.sendJson({cmd: "IOout", error: "Port not connected"});
 	}
 };
 
