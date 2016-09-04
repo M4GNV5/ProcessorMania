@@ -4,11 +4,13 @@
 	</head>
 	<body>
 		<div id="editor">	lidt intHandler
-	int $0xFF
+
+spin:
+	hlt
+	jmp spin
 
 intHandler:
-	hlt
-	jmp intHandler</div>
+	iret</div>
 
 		<div id="out">
 			<div id="displayContainer">
@@ -30,7 +32,8 @@ CPU generated interrupts:
   0x02: Unknown register
   0x03: Invalid memory
         access
-  0x04: User interrupt</textarea></div>
+  0x04: User interrupt
+  0x05: IO error</textarea></div>
 		</div>
 
 		<a href="https://github.com/M4GNV5/ProcessorMania/blob/master/Manual.md">Manual</a>

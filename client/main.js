@@ -43,6 +43,7 @@ ws.onclose = function(ev)
 ws.onmessage = function(ev)
 {
 	var data = JSON.parse(ev.data);
+	console.dir(data);
 	switch(data.cmd)
 	{
 		case "full":
@@ -67,7 +68,7 @@ ws.onmessage = function(ev)
 		case "IOin":
 			if(!device.inIOHandler)
 				break;
-			device.inIOHandler(data.error, data.port, data.value);
+			device.inIOHandler(data.error, data.value);
 			break;
 		case "raise":
 			device.raise(data.id, data.text);

@@ -99,6 +99,7 @@ function BaseModule(device)
 		device.outIOHandler = function(error)
 		{
 			device.outIOHandler = false;
+			device.interrupt.active = false;
 
 			if(error)
 				device.raise(5, error);
@@ -119,12 +120,10 @@ function BaseModule(device)
 		device.isHalting = true;
 		device.interrupt.active = true;
 
-		device.inIOHandler = function(error, _port, value)
+		device.inIOHandler = function(error, value)
 		{
-			if(_port != port)
-				return;
-
 			device.inIOHandler = false;
+			device.interrupt.active = false;
 
 			if(error)
 				device.raise(5, error);
