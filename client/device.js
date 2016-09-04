@@ -2,14 +2,13 @@ function Device(tickRate, memorySize, modules, displayRegs)
 {
 	var self = this;
 
-	this.IOBuff = new Uint16Array(256);
 	this.isHalting = true;
 	this.displayRegs = displayRegs;
 	this.ip = 0;
 	this.interrupt = {
 		id: 0,
 		return: 0,
-		handler: 0,
+		handler: -1,
 		active: false
 	};
 	this.register = {

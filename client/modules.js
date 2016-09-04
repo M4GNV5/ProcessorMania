@@ -93,6 +93,19 @@ function BaseModule(device)
 
 	this.out = function(port, val)
 	{
+		device.isHalting = true;
+		device.interrupt.active = true;
+
+		device.outIOHandler = function(error)
+		{
+			device.outIOHandler = false;
+
+			if(error)
+				device.raise(5, error);
+
+			device.isHalting = false;
+		};
+
 		ws.send(JSON.stringify({
 			cmd: "out",
 			port: port(),
@@ -103,10 +116,23 @@ function BaseModule(device)
 	this.in = function(port)
 	{
 		port = port();
-		var val = device.IOBuff[port] || 0;
-		ax(val);
+		device.isHalting = true;
+		device.interrupt.active = true;
 
-		device.IOBuff[port] = 0;
+		device.inIOHandler = function(error, _port, value)
+		{
+			if(_port != port)
+				return;
+
+			device.inIOHandler = false;
+
+			if(error)
+				device.raise(5, error);
+
+			ax(value);
+			device.isHalting = false;
+		};
+
 		ws.send(JSON.stringify({
 			cmd: "in",
 			port: port

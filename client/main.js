@@ -38,7 +38,7 @@ var device;
 var ws = new WebSocket("ws://" + document.location.hostname + ":8200");
 ws.onclose = function(ev)
 {
-	setNotesText("Websocket closed with code " + ev.code);
+	setNotesText("Websocket closed with code " + ev.code + " " + ev.reason);
 }
 ws.onmessage = function(ev)
 {
@@ -59,8 +59,15 @@ ws.onmessage = function(ev)
 		case "info":
 			setNotesText(data.text);
 			break;
-		case "IO":
-			device.IOBuff[data.port] = data.value;
+		case "IOout":
+			if(!device.outIOHandler)
+				break;
+			device.outIOHandler(data.error);
+			break;
+		case "IOin":
+			if(!device.inIOHandler)
+				break;
+			device.inIOHandler(data.error, data.port, data.value);
 			break;
 		case "raise":
 			device.raise(data.id, data.text);

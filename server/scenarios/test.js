@@ -7,13 +7,19 @@ module.exports = [
 		in: function(port)
 		{
 			this.socket.sendJson({
-				cmd: "display",
-				text: "You issued inb on port " + port
+				cmd: "IOin",
+				error: false,
+				port: port,
+				value: port
 			});
 			console.log((new Date().toLocaleString()) + " | inb " + port);
 		},
 		out: function(port, val)
 		{
+			this.socket.sendJson({
+				cmd: "IOout",
+				error: false
+			});
 			console.log((new Date().toLocaleString()) + " | outb " + port + " " + val);
 		}
 	}
