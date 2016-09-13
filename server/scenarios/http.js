@@ -152,6 +152,8 @@ cpu.on("IOout", function(port, val)
 			cpu.updateDisplay();
 			drive.updateDisplay();
 		}
+
+		cpu.ioOut(false);
 	}
 });
 
@@ -161,7 +163,7 @@ var driveAddress = 0;
 drive.info = {
 	tickRate: 10,
 	memorySize: 32,
-	modules: ["base", "loop", "conditional", "bits", "stack"],
+	modules: ["base", "loop", "conditional", "bit", "stack"],
 	displayRegs: ["ax", "cx", "sp", "ip"],
 };
 drive.inPorts.push(addrPort, dataPort);
@@ -169,9 +171,15 @@ drive.outPorts.push(addrPort, dataPort);
 drive.on("IOout", function(port, val)
 {
 	if(port == addrPort)
+	{
 		driveAddress = val & 0xFFFF;
+		drive.ioOut(false);
+	}
 	else if(port == dataPort)
+	{
 		driveData[driveAddress] = val;
+		drive.ioOut(false);
+	}
 });
 drive.on("IOin", function(port)
 {
