@@ -117,10 +117,7 @@ cpu.on("IOin", function(port)
 		}
 		else
 		{
-			setTimeout(function()
-			{
-				cpu.ioIn("timeout");
-			}, 3000);
+			cpu.ioIn(false, 0);
 		}
 	}
 });
@@ -136,17 +133,11 @@ cpu.on("IOout", function(port, val)
 		else
 		{
 			if(resText == resExpected)
-			{
 				stats.successful++;
-			}
 			else if(resText.indexOf("HTTP/1.0 404") == 0)
-			{
 				files[reqFile] = false;
-			}
 			else
-			{
 				stats.failed++;
-			}
 
 			generateRequest();
 			cpu.updateDisplay();

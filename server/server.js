@@ -59,6 +59,9 @@ wss.on("connection", function(socket)
 				if(player.inPorts.indexOf(data.port) < 0)
 					player.ioIn("Port not connected", 0);
 				break;
+			case "reset":
+				player.emit("reset");
+				player.send({cmd: "reset"});
 			//...
 		}
 	});

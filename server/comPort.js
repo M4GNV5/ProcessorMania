@@ -17,6 +17,27 @@ function ComPort(timeout, master, slave, masterPort, slavePort)
 	var masterVal = 0;
 	var slaveVal = 0;
 
+	master.on("reset", function()
+	{
+		if(timeouts.masterListen)
+			clearTimeout(timeouts.masterListen);
+		if(timeouts.masterSend)
+			clearTimeout(timeouts.masterSend);
+
+		timeouts.masterListen = false;
+		timeouts.masterSend = false;
+	});
+	slave.on("reset", function()
+	{
+		if(timeouts.slaveListen)
+			clearTimeout(timeouts.slaveListen);
+		if(timeouts.slaveSend)
+			clearTimeout(timeouts.slaveSend);
+
+		timeouts.slaveListen = false;
+		timeouts.slaveSend = false;
+	});
+
 	master.on("IOin", function(port)
 	{
 		if(port != masterPort)

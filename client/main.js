@@ -33,6 +33,10 @@ function setNotesText(text)
 		notesText.removeAttribute("disabled");
 	}
 }
+function resetDevice()
+{
+	ws.send(JSON.stringify({cmd: "reset"}));
+}
 
 var device;
 var ws;
@@ -81,6 +85,9 @@ ws.onmessage = function(ev)
 			break;
 		case "raise":
 			device.raise(data.id, data.text);
+			break;
+		case "reset":
+			device.parse(editor.getValue());
 			break;
 	}
 }
