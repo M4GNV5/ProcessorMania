@@ -3,7 +3,8 @@ var util = require("util");
 
 function Player()
 {
-	this.connectedPorts = [];
+	this.inPorts = [];
+	this.outPorts = [];
 	EventEmitter.call(this);
 }
 

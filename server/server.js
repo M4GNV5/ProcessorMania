@@ -50,13 +50,13 @@ wss.on("connection", function(socket)
 			case "out":
 				player.emit("IOout", data.port, data.value);
 
-				if(player.connectedPorts.indexOf(data.port) < 0)
+				if(player.outPorts.indexOf(data.port) < 0)
 					player.ioOut("Port not connected");
 				break;
 			case "in":
 				player.emit("IOin", data.port);
 
-				if(player.connectedPorts.indexOf(data.port) < 0)
+				if(player.inPorts.indexOf(data.port) < 0)
 					player.ioIn("Port not connected", 0);
 				break;
 			//...

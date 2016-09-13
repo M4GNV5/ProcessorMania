@@ -3,8 +3,10 @@ function ComPort(timeout, master, slave, masterPort, slavePort)
 	masterPort = masterPort || Math.round(Math.random() * 1000) % 255 + 1;
 	slavePort = slavePort || Math.round(Math.random() * 1000) % 255 + 1;
 
-	master.connectedPorts.push(masterPort);
-	slave.connectedPorts.push(slavePort);
+	master.inPorts.push(masterPort);
+	master.outPorts.push(masterPort);
+	slave.inPorts.push(slavePort);
+	slave.outPorts.push(slavePort);
 
 	var timeouts = {
 		masterListen: false,
