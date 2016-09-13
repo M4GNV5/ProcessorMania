@@ -174,7 +174,14 @@ Device.prototype.tick = function()
 		{
 			(function()
 			{
-				var val = parseInt(arg.substr(1));
+				var val;
+				arg = arg.substr(1);
+
+				if(arg.length == 3 && arg[0] == "'" && arg[2] == "'")
+					val = arg.charCodeAt(1);
+				else
+					val = parseInt(arg);
+
 				args.push(function(setVal)
 				{
 					if(typeof setVal != "undefined")
