@@ -308,12 +308,12 @@ function StackModule(device)
 		"push": 1,
 		"pop": 1,
 		"call": 1,
-		"ret": 1
+		"ret": 0
 	};
 
 	this.push = function(val)
 	{
-		device.getMemory(sp())(val);
+		device.getMemory(sp())(val());
 		sp(sp() - 1);
 	};
 	this.pop = function(val)
@@ -324,12 +324,12 @@ function StackModule(device)
 	this.call = function(val)
 	{
 		device.getMemory(sp())(device.ip);
-		device.ip = val;
-		sp(sp() + 1);
+		device.ip = val();
+		sp(sp() - 1);
 	};
 	this.ret = function(val)
 	{
+		sp(sp() + 1);
 		device.ip = device.getMemory(sp())();
-		sp(sp() - 1);
 	};
 }
