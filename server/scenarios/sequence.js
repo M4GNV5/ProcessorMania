@@ -9,7 +9,7 @@ function rand(max, min)
 	return Math.round(Math.random() * 1000) % max + min;
 }
 
-var mode = process.argv[4] || "print";
+var mode = process.argv[3] || "print";
 var completed;
 var sequence;
 var expected;

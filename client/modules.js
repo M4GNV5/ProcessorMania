@@ -47,7 +47,10 @@ function BaseModule(device)
 	this.lidt = function(handler)
 	{
 		device.interrupt.handler = handler();
-		interruptDisplay.innerHTML = "Interrupt: int.id: ?? int.ip: ??";
+		if(handler < 0 || handler >= device.lines.length)
+			interruptDisplay.innerHTML = "/?\\ Interrupt: int.id: ?? int.ip: ??";
+		else
+			interruptDisplay.innerHTML = "Interrupt: int.id: ?? int.ip: ??";
 	}
 
 	this.int = function(id)
@@ -60,7 +63,7 @@ function BaseModule(device)
 	{
 		if(!device.interrupt.active)
 			device.raise(0, "Using iret while not in an interrupt");
-		device.ip = device.interrupt.return - 1;
+		device.ip = device.interrupt.return;
 		device.interrupt.active = false;
 		interruptDisplay.innerHTML = "Interrupt: int.id: ?? int.ip: ??";
 	}

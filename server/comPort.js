@@ -20,7 +20,7 @@ ComPort.prototype.masterListen = function()
 	if(this.timeouts.slaveSend)
 	{
 		clearTimeout(this.timeouts.slaveSend);
-		this.master.sendJson({cmd: "IOin", error: false, value: val});
+		this.master.sendJson({cmd: "IOin", error: false, value: this.slaveVal});
 		this.slave.sendJson({cmd: "IOout", error: false});
 	}
 	else
@@ -42,6 +42,7 @@ ComPort.prototype.masterSend = function(val)
 	}
 	else
 	{
+		this.masterVal = val;
 		this.timeouts.masterSend = setTimeout(function()
 		{
 			this.timeouts.masterSend = false;
@@ -55,7 +56,7 @@ ComPort.prototype.slaveListen = function()
 	if(this.timeouts.masterSend)
 	{
 		clearTimeout(this.timeouts.masterSend);
-		this.slave.sendJson({cmd: "IOin", error: false, value: val});
+		this.slave.sendJson({cmd: "IOin", error: false, value: this.masterVal});
 		this.master.sendJson({cmd: "IOout", error: false});
 	}
 	else
@@ -77,6 +78,7 @@ ComPort.prototype.slaveSend = function(val)
 	}
 	else
 	{
+		this.slaveVal = val;
 		this.timeouts.slaveSend = setTimeout(function()
 		{
 			this.timeouts.slaveSend = false;

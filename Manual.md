@@ -68,7 +68,7 @@ the add instruction will cause an invalid instruction interrupt and your program
 - `inc val` val++
 - `dec val` val--
 - `jmp dst` Unconditional jump to `dst`
-- `out port val` Output `val` to `port` (used for communicating with other processor)
+- `out port, val` Output `val` to `port` (used for communicating with other processor)
 - `in port` Input value from `port` into `AX`
 
 ##Loop
@@ -111,7 +111,7 @@ the add instruction will cause an invalid instruction interrupt and your program
 - `BP` Base pointer
 
 ###Instructions
-- `push val` *sp++ = val
-- `pop val` val = *--sp;
+- `push val` *sp-- = val
+- `pop val` val = *++sp;
 - `call dst` push ip; ip = dst
 - `ret` pop ip

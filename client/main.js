@@ -43,7 +43,6 @@ ws.onclose = function(ev)
 ws.onmessage = function(ev)
 {
 	var data = JSON.parse(ev.data);
-	console.dir(data);
 	switch(data.cmd)
 	{
 		case "full":

@@ -57,7 +57,7 @@ function Device(tickRate, memorySize, modules, displayRegs)
 Device.prototype.raise = function(id, msg)
 {
 	this.interrupt.id = id & 0xFF;
-	this.interrupt.return = this.ip;
+	this.interrupt.return = this.ip - 1;
 
 	var idString = this.interrupt.id.toString(16).pad(2);
 	var returnString = this.interrupt.return.toString(16).pad(2);
