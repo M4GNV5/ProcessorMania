@@ -26,6 +26,13 @@ mainly because not all processors in this game have memory to put the return add
 - `0x03`: Invalid memory access
 - `0x04`: User interrupt
 
+##Interrupt display
+- `/?\ Interrupt: int.id: ?? int.ip: ??`: Interrupt handler not set
+- `Interrupt: int.id: ?? int.ip: ??`: All fine
+- `Interrupt: int.id: 00 int.ip: 17`: Handling interrupt id 0, line 0x17 (example values)
+- `/!\ Interrupt: int.id: 00 int.ip: 17`: Double interrupt (Interrupt while in an interrupt handler)
+	this will cause the processor to halt until you press reset device
+
 ##Detecting Processor Features
 At the beginning of a game you will not know what features your CPU has or what your role is.
 You can find out what modules are enabled for you by just trying instructions or accessing
