@@ -1,9 +1,9 @@
-function Device(tickRate, memorySize, modules, displayRegs)
+function Device(info)
 {
 	var self = this;
 
 	this.isHalting = true;
-	this.displayRegs = displayRegs;
+	this.displayRegs = info.displayRegs;
 	this.ip = 0;
 	this.interrupt = {
 		id: 0,
@@ -35,11 +35,11 @@ function Device(tickRate, memorySize, modules, displayRegs)
 		}
 	};
 
-	if(memorySize > 0)
-		this.memory = new Uint16Array(memorySize);
+	if(info.memorySize > 0)
+		this.memory = new Uint16Array(info.memorySize);
 
 	this.modules = [];
-	modules.forEach(function(name)
+	info.modules.forEach(function(name)
 	{
 		var ctor = availableModules[name];
 		if(!ctor)
@@ -51,7 +51,7 @@ function Device(tickRate, memorySize, modules, displayRegs)
 	this.interval = setInterval(function()
 	{
 		self.tick();
-	}, tickRate);
+	}, info.tickRate);
 }
 
 Device.prototype.raise = function(id, msg)

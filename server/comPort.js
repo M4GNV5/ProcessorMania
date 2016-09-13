@@ -1,90 +1,112 @@
 function ComPort(timeout, master, slave, masterPort, slavePort)
 {
-	this.timeout = timeout;
-	this.master = master;
-	this.slave = slave;
+	masterPort = masterPort || Math.round(Math.random() * 1000) % 255 + 1;
+	slavePort = slavePort || Math.round(Math.random() * 1000) % 255 + 1;
 
-	this.timeouts = {
+	master.connectedPorts.push(masterPort);
+	slave.connectedPorts.push(slavePort);
+
+	var timeouts = {
 		masterListen: false,
 		slaveListen: false,
 		masterSend: false,
 		slaveSend: false
 	};
+	var masterVal = 0;
+	var slaveVal = 0;
 
-	this.masterPort = masterPort || Math.round(Math.random() * 1000) % 255 + 1;
-	this.slavePort = slavePort || Math.round(Math.random() * 1000) % 255 + 1;
+	master.on("IOin", function(port)
+	{
+		if(port != masterPort)
+			return;
+
+		if(timeouts.slaveSend)
+		{
+			clearTimeout(timeouts.slaveSend);
+			timeouts.slaveSend = false;
+
+			master.ioIn(false, slaveVal);
+			slave.ioOut(false);
+		}
+		else
+		{
+			timeouts.masterListen = setTimeout(function()
+			{
+				timeouts.masterListen = false;
+				master.ioIn("timeout");
+			}, timeout);
+		}
+	});
+	master.on("IOout", function(port, val)
+	{
+		if(port != masterPort)
+			return;
+
+		if(timeouts.slaveListen)
+		{
+			clearTimeout(timeouts.slaveListen);
+			timeouts.slaveListen = false;
+
+			slave.ioIn(false, val);
+			master.ioOut(false);
+		}
+		else
+		{
+			masterVal = val;
+			timeouts.masterSend = setTimeout(function()
+			{
+				timeouts.masterSend = false;
+				master.ioOut("timeout");
+			}, timeout);
+		}
+	});
+
+	slave.on("IOin", function(port)
+	{
+		if(port != slavePort)
+			return;
+
+		if(timeouts.masterSend)
+		{
+			clearTimeout(timeouts.masterSend);
+			timeouts.masterSend = false;
+
+			slave.ioIn(false, masterVal);
+			master.ioOut(false);
+		}
+		else
+		{
+			timeouts.slaveListen = setTimeout(function()
+			{
+				timeouts.slaveListen = false;
+				slave.ioIn("timeout");
+			}, timeout);
+		}
+	});
+
+	slave.on("IOout", function(port, val)
+	{
+		if(port != slavePort)
+			return;
+
+		if(timeouts.masterListen)
+		{
+			clearTimeout(timeouts.masterListen);
+			timeouts.masterListen = false;
+
+			master.ioIn(false, val);
+			slave.ioOut(false);
+		}
+		else
+		{
+			slaveVal = val;
+			timeouts.slaveSend = setTimeout(function()
+			{
+				timeouts.slaveSend = false;
+				slave.ioOut("timeout");
+			}, timeout);
+		}
+	});
 }
-
-ComPort.prototype.masterListen = function()
-{
-	if(this.timeouts.slaveSend)
-	{
-		clearTimeout(this.timeouts.slaveSend);
-		this.master.sendJson({cmd: "IOin", error: false, value: this.slaveVal});
-		this.slave.sendJson({cmd: "IOout", error: false});
-	}
-	else
-	{
-		this.timeouts.masterListen = setTimeout(function()
-		{
-			this.timeouts.masterListen = false;
-			this.master.sendJson({cmd: "IOin", error: "IO Timeout"});
-		}.bind(this), this.timeout);
-	}
-};
-ComPort.prototype.masterSend = function(val)
-{
-	if(this.timeouts.slaveListen)
-	{
-		clearTimeout(this.timeouts.slaveListen);
-		this.slave.sendJson({cmd: "IOin", error: false, value: val});
-		this.master.sendJson({cmd: "IOout", error: false});
-	}
-	else
-	{
-		this.masterVal = val;
-		this.timeouts.masterSend = setTimeout(function()
-		{
-			this.timeouts.masterSend = false;
-			this.master.sendJson({cmd: "IOout", error: "IO Timeout"});
-		}.bind(this), this.timeout);
-	}
-};
-
-ComPort.prototype.slaveListen = function()
-{
-	if(this.timeouts.masterSend)
-	{
-		clearTimeout(this.timeouts.masterSend);
-		this.slave.sendJson({cmd: "IOin", error: false, value: this.masterVal});
-		this.master.sendJson({cmd: "IOout", error: false});
-	}
-	else
-	{
-		this.timeouts.slaveListen = setTimeout(function()
-		{
-			this.timeouts.slaveListen = false;
-			this.slave.sendJson({cmd: "IOin", error: "IO Timeout"});
-		}.bind(this), this.timeout);
-	}
-};
-ComPort.prototype.slaveSend = function(val)
-{
-	if(this.timeouts.masterListen)
-	{
-		clearTimeout(this.timeouts.masterListen);
-		this.master.sendJson({cmd: "IOin", error: false, value: val});
-		this.slave.sendJson({cmd: "IOout", error: false});
-	}
-	else
-	{
-		this.slaveVal = val;
-		this.timeouts.slaveSend = setTimeout(function()
-		{
-			this.timeouts.slaveSend = false;
-			this.slave.sendJson({cmd: "IOout", error: "IO Timeout"});
-		}.bind(this), this.timeout);
-	}
-};
 
 module.exports = ComPort;

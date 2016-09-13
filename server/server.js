@@ -5,40 +5,30 @@ if(process.argv.length < 3)
 }
 
 var WebSocketServer = require("ws").Server;
-var player = require("./scenarios/" + process.argv[2] + ".js");
+var playerList = require("./scenarios/" + process.argv[2] + ".js");
 
 var wss = new WebSocketServer({port: 8200});
 wss.on("connection", function(socket)
 {
-	socket.sendJson = function(obj)
-	{
-		socket.send(JSON.stringify(obj));
-	};
-
 	var playerId = -1;
-	for(var i = 0; i < player.length; i++)
+	var player;
+	for(var i = 0; i < playerList.length; i++)
 	{
-		if(!player[i].socket)
+		if(!playerList[i].socket)
 		{
 			playerId = i;
-			player[i].socket = socket;
-			socket.sendJson({
-				cmd: "start",
-				tickRate: player[i].tickRate,
-				memorySize: player[i].memorySize,
-				modules: player[i].modules,
-				displayRegs: player[i].displayRegs
-			});
+			player = playerList[i];
 
-			if(player[i].setup)
-				player[i].setup();
+			player.socket = socket;
+			player.send({cmd: "start", info: player.info});
+			player.emit("connect");
 
 			break;
 		}
 	}
 	if(playerId < 0)
 	{
-		socket.sendJson({cmd: "full"});
+		socket.send(JSON.stringify({cmd: "full"}));
 		socket.close();
 		return;
 	}
@@ -49,7 +39,8 @@ wss.on("connection", function(socket)
 	socket.on("close", function()
 	{
 		console.log((new Date().toLocaleString()) + " | " + remoteAddress + " | disconnected as player " + playerId);
-		player[playerId].socket = false;
+		player.socket = false;
+		player.emit("disconnect");
 	});
 	socket.on("message", function(msg)
 	{
@@ -57,12 +48,16 @@ wss.on("connection", function(socket)
 		switch(data.cmd)
 		{
 			case "out":
-				if(player[playerId].out)
-					player[playerId].out(data.port, data.value);
+				player.emit("IOout", data.port, data.value);
+
+				if(player.connectedPorts.indexOf(data.port) < 0)
+					player.ioOut("Port not connected");
 				break;
 			case "in":
-				if(player[playerId].in)
-					player[playerId].in(data.port);
+				player.emit("IOin", data.port);
+
+				if(player.connectedPorts.indexOf(data.port) < 0)
+					player.ioIn("Port not connected", 0);
 				break;
 			//...
 		}

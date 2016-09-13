@@ -104,7 +104,9 @@ function BaseModule(device)
 			device.outIOHandler = false;
 			device.interrupt.active = false;
 
-			if(error)
+			if(error == "timeout")
+				device.raise(6, "IO Timeout");
+			else if(error)
 				device.raise(5, error);
 
 			device.isHalting = false;
@@ -128,7 +130,9 @@ function BaseModule(device)
 			device.inIOHandler = false;
 			device.interrupt.active = false;
 
-			if(error)
+			if(error == "timeout")
+				device.raise(6, "IO Timeout");
+			else if(error)
 				device.raise(5, error);
 
 			ax(value);

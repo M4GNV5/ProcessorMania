@@ -1,26 +1,20 @@
-module.exports = [
-	{
-		tickRate: 100,
-		memorySize: 256,
-		modules: ["base", "loop", "conditional", "bit", "bcdreg", "alu", "stack"],
-		displayRegs: ["ax", "cx", "ip"],
-		in: function(port)
-		{
-			this.socket.sendJson({
-				cmd: "IOin",
-				error: false,
-				port: port,
-				value: port
-			});
-			console.log((new Date().toLocaleString()) + " | inb " + port);
-		},
-		out: function(port, val)
-		{
-			this.socket.sendJson({
-				cmd: "IOout",
-				error: false
-			});
-			console.log((new Date().toLocaleString()) + " | outb " + port + " " + val);
-		}
-	}
-];
+var Player = require("../player.js");
+
+var p = new Player();
+p.info = {
+	tickRate: 5,
+	memorySize: 256,
+	modules: ["base", "loop", "conditional", "bit", "bcdreg", "alu", "stack"],
+	displayRegs: ["ax", "cx", "ip"]
+};
+
+p.on("IOin", function(port)
+{
+	console.log((new Date().toLocaleString()) + " | in " + port);
+});
+p.on("IOout", function(port, val)
+{
+	console.log((new Date().toLocaleString()) + " | out " + port + ", " + val);
+});
+
+module.exports = [p];

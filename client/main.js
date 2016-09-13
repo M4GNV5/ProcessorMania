@@ -49,7 +49,7 @@ ws.onmessage = function(ev)
 			setNotesText("Server full :(");
 			break;
 		case "start":
-			device = new Device(data.tickRate, data.memorySize, data.modules, data.displayRegs);
+			device = new Device(data.info);
 			document.getElementById("resetButton").disabled = false;
 			document.getElementById("interruptButton").disabled = false;
 			break;
