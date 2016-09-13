@@ -319,7 +319,7 @@ function StackModule(device)
 	this.pop = function(val)
 	{
 		sp(sp() + 1);
-		val(device.getMemory(sp()));
+		val(device.getMemory(sp())());
 	};
 	this.call = function(val)
 	{

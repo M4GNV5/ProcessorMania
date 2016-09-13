@@ -67,6 +67,8 @@ Device.prototype.raise = function(id, msg)
 	{
 		interruptDisplay.innerHTML = "/!\\ " + labelString;
 		this.isHalting = true;
+		this.outIOHandler = false;
+		this.inIOHandler = false;
 	}
 	else if(this.interrupt.handler < 0 || this.interrupt.handler >= this.lines.length)
 	{
@@ -103,6 +105,8 @@ Device.prototype.parse = function(src)
 
 	interruptDisplay.innerHTML = "/?\\ Interrupt: int.id: ?? int.ip: ??";
 	this.interrupt.active = false;
+	this.outIOHandler = false;
+	this.inIOHandler = false;
 
 	var self = this;
 	this.lines.forEach(function(line, i)

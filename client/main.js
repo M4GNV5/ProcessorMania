@@ -30,7 +30,7 @@ function setNotesText(text)
 	else
 	{
 		notesText.value = localStorage.notes;
-		notesText.disabled = false;
+		notesText.removeAttribute("disabled");
 	}
 }
 
@@ -40,6 +40,11 @@ if(document.location.hostname == "m4gnus.de")
 	ws = new WebSocket("wss://m4gnus.de:8201"); //nginx proxy
 else
 	ws = new WebSocket("ws://" + document.location.hostname + ":8200");
+
+setInterval(function()
+{
+	ws.send("{\"cmd\":\"ping\"}");
+}, 10 * 1000);
 
 ws.onclose = function(ev)
 {
