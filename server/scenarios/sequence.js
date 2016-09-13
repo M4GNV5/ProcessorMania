@@ -1,3 +1,4 @@
+var Player = require("../player.js");
 var ComPort = require("../comPort.js");
 
 function rand(max, min)
@@ -92,70 +93,57 @@ function output(sender, val)
 		generateSequence();
 	}
 
-	cpu.socket.sendJson({cmd: "display", text: text});
-	mem.socket.sendJson({cmd: "display", text: text});
-	sender.socket.sendJson({cmd: "IOout", error: false});
+	cpu.setOutput(text);
+	mem.setOutput(text);
+	sender.ioOut(false);
 }
 
-var com = new ComPort(3000);
-console.dir(com);
-
-var cpu = {
+var cpu = new Player();
+cpu.info = {
 	tickRate: 5,
 	memorySize: memorySize[mode][0],
 	modules: ["base", "conditional", "bcdreg", "alu"],
 	displayRegs: ["ax", "dx", "ip"],
-	setup: function()
-	{
-		com.master = this.socket;
-	},
-	in: function(port, val)
-	{
-		if(port == com.masterPort)
-			com.masterListen();
-		else
-			this.socket.sendJson({cmd: "IOin", error: "Port not connected"});
-	},
-	out: function(port, val)
-	{
-		if(port == com.masterPort)
-			com.masterSend(val);
-		else if(port == outPort && cpuHasOut[mode])
-			output(this, val);
-		else
-			this.socket.sendJson({cmd: "IOout", error: "Port not connected"});
-	}
 };
-var mem = {
-	inPort: rand(),
+if(cpuHasOut[mode])
+{
+	cpu.outPorts.push(outPort);
+	cpu.on("IOout", function(port, val)
+	{
+		if(port == outPort)
+			output(cpu, val);
+	});
+}
 
+
+
+var mem = new Player();
+mem.info = {
 	tickRate: 50,
 	memorySize: memorySize[mode][1],
 	modules: ["base", "conditional", "loop"],
-	displayRegs: ["ax", "cx", "ip"],
-	setup: function()
-	{
-		com.slave = this.socket;
-	},
-	in: function(port)
-	{
-		if(port == com.slavePort)
-			com.slaveListen();
-		else if(port == this.inPort)
-			this.socket.sendJson({cmd: "IOin", error: false, value: sequence.shift() || 0});
-		else
-			this.socket.sendJson({cmd: "IOin", error: "Port not connected"});
-	},
-	out: function(port, val)
-	{
-		if(port == com.slavePort)
-			com.slaveSend(val);
-		else if(port == outPort && !cpuHasOut[mode])
-			output(this, val);
-		else
-			this.socket.sendJson({cmd: "IOout", error: "Port not connected"});
-	}
+	displayRegs: ["ax", "cx", "ip"]
 };
+
+var inPort = rand();
+mem.inPorts.push(inPort);
+mem.on("IOin", function(port)
+{
+	if(port == inPort)
+		mem.ioIn(false, sequence.shift());
+});
+
+if(!cpuHasOut[mode])
+{
+	mem.outPorts.push(outPort);
+	mem.on("IOout", function(port, val)
+	{
+		if(port == outPort)
+			output(mem, val);
+	});
+}
+
+var com = new ComPort(3000, cpu, mem);
 
 module.exports = [
 	cpu,
