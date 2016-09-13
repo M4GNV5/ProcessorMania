@@ -35,7 +35,12 @@ function setNotesText(text)
 }
 
 var device;
-var ws = new WebSocket("ws://" + document.location.hostname + ":8200");
+var ws;
+if(document.location.hostname == "m4gnus.de")
+	ws = new WebSocket("wss://m4gnus.de:8201"); //nginx proxy
+else
+	ws = new WebSocket("ws://" + document.location.hostname + ":8200");
+
 ws.onclose = function(ev)
 {
 	setNotesText("Websocket closed with code " + ev.code + " " + ev.reason);
